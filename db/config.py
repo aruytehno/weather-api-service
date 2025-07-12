@@ -10,3 +10,8 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+class Settings(BaseSettings):
+    ...
+    OPENWEATHER_API_KEY: str
+    ...
