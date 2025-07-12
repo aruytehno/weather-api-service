@@ -1,6 +1,5 @@
-from db.database import db
-from models.weather import WeatherCreate
-from bson import ObjectId
+from server.db import db
+from server.models import WeatherCreate
 from typing import List
 
 async def save_weather(data: WeatherCreate) -> str:

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from services.weather_service import save_weather, get_latest_weather, get_weather_history
-from utils.openweather import fetch_weather_from_api
-from models.weather import WeatherCreate
+from server.services.weather_service import save_weather, get_latest_weather, get_weather_history
+from server.utils.openweather import fetch_weather_from_api
+from server.models.weather import WeatherCreate
 from datetime import datetime
 
 router = APIRouter(prefix="/weather", tags=["Weather"])
