@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from db.database import db
 
 app = FastAPI(
     title="Weather API",
@@ -16,6 +17,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/ping")
 async def ping():
     return {"message": "pong"}
+
+
+@app.get("/test-db")
+async def test_db():
+    collections = await db.list_collection_names()
+    return {"collections": collections}
