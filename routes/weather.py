@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from models.weather import WeatherCreate
-from services.weather_service import save_weather, get_latest_weather
+from services.weather_service import save_weather, get_latest_weather, get_weather_history
 from utils.openweather import fetch_weather_from_api
 from models.weather import WeatherCreate
 from datetime import datetime
@@ -35,3 +34,11 @@ async def fetch_weather(city: str):
     )
     weather_id = await save_weather(full_data)
     return {"message": "Weather fetched and saved", "data": full_data, "id": weather_id}
+
+
+@router.get("/history/{city}")
+async def get_city_weather_history(city: str, limit: int = 10):
+    history = await get_weather_history(city, limit)
+    if not history:
+        raise HTTPException(status_code=404, detail="No weather data found for city")
+    return {"city": city, "history": history}
