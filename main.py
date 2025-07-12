@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from db.database import db
+from routes import weather
+
 
 app = FastAPI(
     title="Weather API",
     description="Fullstack weather application with FastAPI backend and MongoDB",
     version="0.1.0",
 )
-
+app.include_router(weather.router)
 # Разрешить доступ с фронтенда
 app.add_middleware(
     CORSMiddleware,
