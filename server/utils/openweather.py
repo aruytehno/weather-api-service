@@ -1,5 +1,5 @@
 import httpx
-from server.db import settings
+from ..db.config import settings
 
 
 async def fetch_weather_from_api(city: str):

@@ -1,0 +1,1 @@
+from .database import db  # Добавьте эту строку

@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from db.database import db
-from routes import weather
-
+from .db.database import db
+from .routes import weather
 
 app = FastAPI(
     title="Weather API",
