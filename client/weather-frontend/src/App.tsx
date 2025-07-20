@@ -13,24 +13,29 @@ function App() {
   const [city, setCity] = useState('')
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   async function fetchWeather() {
     setError('')
     setWeather(null)
+    setLoading(true)
     if (!city.trim()) {
-      setError('Please enter a city')
+      setError('Введите название города')
+      setLoading(false)
       return
     }
 
     try {
       const response = await fetch(`http://127.0.0.1:8000/weather/fetch/${city}`)
       if (!response.ok) {
-        throw new Error('City not found or API error')
+        throw new Error('Город не найден или ошибка API')
       }
       const data = await response.json()
-      setWeather(data.data) // согласно твоему бекенду: { message, data, id }
+      setWeather(data.data)
     } catch (err: any) {
       setError(err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -45,31 +50,33 @@ function App() {
         </a>
       </div>
 
-      <h1>Weather App</h1>
+      <h1>Прогноз погоды</h1>
 
       <div className="card">
         <input
           type="text"
-          placeholder="Enter city"
+          placeholder="Введите город"
           value={city}
           onChange={e => setCity(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && fetchWeather()}
         />
-        <button onClick={fetchWeather}>Get Weather</button>
+        <button onClick={fetchWeather} disabled={loading}>
+          {loading ? 'Загрузка...' : 'Получить погоду'}
+        </button>
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
         {weather && (
-          <div style={{ marginTop: 20 }}>
+          <div className="weather-card">
             <h2>{weather.city}</h2>
-            <p>Temperature: {weather.temperature}°C</p>
-            <p>Description: {weather.description}</p>
+            <p>Температура: {weather.temperature}°C</p>
+            <p>Описание: {weather.description}</p>
           </div>
         )}
       </div>
 
       <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+        Нажмите на логотипы Vite и React, чтобы узнать больше
       </p>
     </>
   )
