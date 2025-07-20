@@ -15,10 +15,17 @@ function App() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // История городов из localStorage
+  const [history, setHistory] = useState<string[]>(() => {
+    const saved = localStorage.getItem('cityHistory')
+    return saved ? JSON.parse(saved) : []
+  })
+
   async function fetchWeather() {
     setError('')
     setWeather(null)
     setLoading(true)
+
     if (!city.trim()) {
       setError('Введите название города')
       setLoading(false)
@@ -32,6 +39,13 @@ function App() {
       }
       const data = await response.json()
       setWeather(data.data)
+
+      // Добавляем город в историю (макс 5, без дубликатов)
+      setHistory(prev => {
+        const newHistory = [city, ...prev.filter(c => c.toLowerCase() !== city.toLowerCase())].slice(0, 5)
+        localStorage.setItem('cityHistory', JSON.stringify(newHistory))
+        return newHistory
+      })
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -60,6 +74,22 @@ function App() {
           onChange={e => setCity(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && fetchWeather()}
         />
+
+        {/* Список истории городов */}
+        {history.length > 0 && (
+          <ul style={{ cursor: 'pointer', listStyle: 'none', paddingLeft: 0, marginTop: 4, marginBottom: 8 }}>
+            {history.map(item => (
+              <li
+                key={item}
+                onClick={() => setCity(item)}
+                style={{ padding: '4px 8px', borderBottom: '1px solid #ccc', userSelect: 'none' }}
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
+
         <button onClick={fetchWeather} disabled={loading}>
           {loading ? 'Загрузка...' : 'Получить погоду'}
         </button>
